@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
+import PropTypes from 'prop-types'
 
-const Formulario = () => {
+const Formulario = ({crearCita}) => {
 
     const [cita, actualizarCita] = useState({
         mascota:'',
@@ -24,7 +25,7 @@ const Formulario = () => {
     }
 
     //envío del form
-    const crearCita = e => {
+    const subirCita = e => {
         e.preventDefault()
 
         //Validación de formulario
@@ -38,7 +39,18 @@ const Formulario = () => {
 
         //asignamos un id aleatorio a cada cita con el paquete de npm 'uuid'
         cita.id = uuidv4()
-        console.log(cita)
+        
+        //Crea la cita (función polizón pasada por props)
+        crearCita(cita)
+
+        //Reiniciar form
+        actualizarCita({
+            mascota:'',
+            propietario:'',
+            fecha:'',
+            hora:'',
+            sintomas:''
+        })
     }
 
     return (
@@ -47,7 +59,7 @@ const Formulario = () => {
 
             {error ? <p className='alerta-error'>Todos los campos son obligatorios</p> : null}
 
-            <form onSubmit={crearCita}>
+            <form onSubmit={subirCita}>
                 <label>Nombre mascota</label>
                 <input type='text' value={mascota} onChange={actualizarState} name='mascota' className='u-full-width' placeholder='Nombre mascota' />
 
@@ -67,6 +79,10 @@ const Formulario = () => {
             </form>
         </>
     )
+}
+
+Formulario.propTypes = {
+    crearCita: PropTypes.func.isRequired
 }
  
 export default Formulario
